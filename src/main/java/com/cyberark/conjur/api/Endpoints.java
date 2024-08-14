@@ -14,14 +14,16 @@ public class Endpoints implements Serializable {
     private static final long serialVersionUID = 1L;
     private final URI authnUri;
     private final URI secretsUri;
+    private final String source;
 
-    public Endpoints(final URI authnUri, final URI secretsUri){
+    public Endpoints(final URI authnUri, final URI secretsUri,final String source){
         this.authnUri = Args.notNull(authnUri, "authnUri");
         this.secretsUri = Args.notNull(secretsUri, "secretsUri");
+        this.source = source;
     }
 
-    public Endpoints(String authnUri, String secretsUri){
-        this(URI.create(authnUri), URI.create(secretsUri));
+    public Endpoints(String authnUri, String secretsUri,String source){
+        this(URI.create(authnUri), URI.create(secretsUri),source);
     }
 
     public URI getAuthnUri(){ return authnUri; }
@@ -37,15 +39,15 @@ public class Endpoints implements Serializable {
 
         return new Endpoints(
                 getAuthnServiceUri(authnUrl, account),
-                getServiceUri("secrets", account, "variable")
+                getServiceUri("secrets", account, "variable"),null
         );
     }
 
-    public static Endpoints fromCredentials(Credentials credentials){
+    public static Endpoints fromCredentials(Credentials credentials,String source){
         String account = Properties.getMandatoryProperty(Constants.CONJUR_ACCOUNT_PROPERTY);
         return new Endpoints(
                 getAuthnServiceUri(credentials.getAuthnUrl(), account),
-                getServiceUri("secrets", account, "variable")
+                getServiceUri("secrets", account, "variable"),source
         );
     }
 
@@ -56,12 +58,15 @@ public class Endpoints implements Serializable {
     private static URI getServiceUri(String service, String accountName, String path){
         return URI.create(String.format("%s/%s/%s/%s", Properties.getMandatoryProperty(Constants.CONJUR_APPLIANCE_URL_PROPERTY), service, accountName, path));
     }
+    
+    public String getSource(){return source;}
 
     @Override
     public String toString() {
         return "Endpoints{" +
                 "authnUri=" + authnUri +
                 "secretsUri=" + secretsUri +
+                "source=" + source +
                 '}';
     }
 }

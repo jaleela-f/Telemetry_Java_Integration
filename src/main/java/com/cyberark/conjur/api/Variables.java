@@ -8,20 +8,24 @@ public class Variables {
 
     private ResourceClient resourceClient;
 
-    public Variables(Credentials credentials) {
-        this(credentials, null);
+    public Variables(Credentials credentials,String source) {
+        this(credentials, null,source);
     }
 
-    public Variables(Credentials credentials, SSLContext sslContext) {
+    public Variables(Credentials credentials, SSLContext sslContext,String source) {
         resourceClient =
-                new ResourceClient(credentials, Endpoints.fromCredentials(credentials), sslContext);
+                new ResourceClient(credentials, Endpoints.fromCredentials(credentials,source), sslContext);
     }
 
     public Variables(Token token) {
         this(token, null);
     }
-
+    
     public Variables(Token token, SSLContext sslContext) {
+        this(token, null, null);
+    }
+
+    public Variables(Token token, SSLContext sslContext,String source) {
         resourceClient = new ResourceClient(token, Endpoints.fromSystemProperties(), sslContext);
     }
 

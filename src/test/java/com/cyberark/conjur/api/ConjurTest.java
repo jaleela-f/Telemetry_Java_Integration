@@ -83,6 +83,16 @@ public class ConjurTest {
         Conjur conjur = new Conjur(ALTERNATIVE_USERNAME, ALTERNATIVE_API_KEY, authnUrl);
         conjur.variables().retrieveSecret(VARIABLE_KEY);
     }
+    @Test
+    public void testSorucer() {
+        expectedException.expect(WebApplicationException.class);
+        expectedException.expectMessage(UNAUTHORIZED_STATUS_CODE);
+
+        String authnUrl = System.getProperty(APPLIANCE_URL_PROPERTY) + ALTERNATIVE_AUTHN_ENDPOINT;
+
+        Conjur conjur = new Conjur(ALTERNATIVE_USERNAME, ALTERNATIVE_API_KEY, authnUrl);
+        conjur.variables().retrieveSecret(VARIABLE_KEY);
+    }
 
 
     @Rule

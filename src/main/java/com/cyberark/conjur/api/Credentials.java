@@ -17,6 +17,7 @@ public class Credentials {
     private String username;
     private String password;
     private String authnUrl;
+    private String source;
 
     /**
      * @param username the username/login for this Conjur identity
@@ -27,18 +28,32 @@ public class Credentials {
            Properties.getMandatoryProperty(Constants.CONJUR_AUTHN_URL_PROPERTY,
            Properties.getMandatoryProperty(Constants.CONJUR_APPLIANCE_URL_PROPERTY) + "/authn"));
     }
+    
+    /**
+     * @param username the username/login for this Conjur identity
+     * @param password the password or api key for this Conjur identity
+     * @param source the source for this conjur identity
+     */
+    public Credentials(String username, String password,String source) {
+        this(username, password, 
+           Properties.getMandatoryProperty(Constants.CONJUR_AUTHN_URL_PROPERTY,
+           Properties.getMandatoryProperty(Constants.CONJUR_APPLIANCE_URL_PROPERTY) + "/authn"),
+           Properties.getMandatoryProperty(Constants.CONJUR_SOURCE_HEADER));
+    }
 
     /**
      * @param username the username/login for this Conjur identity
      * @param password the password or api key for this Conjur identity
      * @param authnUrl the conjur authentication url
      */
-    public Credentials(String username, String password, String authnUrl) {
+    public Credentials(String username, String password, String authnUrl,String source) {
         this.username = username;
         this.password = password;
         this.authnUrl = authnUrl;
+        this.source =source;
     }
 
+   
     /**
      * Creates a Credentials instance from the system properties
      * @return the credentials stored in the system property.
@@ -48,8 +63,8 @@ public class Credentials {
         String apiKey = Properties.getMandatoryProperty(Constants.CONJUR_AUTHN_API_KEY_PROPERTY);
         String applianceUrl = Properties.getMandatoryProperty(Constants.CONJUR_APPLIANCE_URL_PROPERTY);
         String authnUrl = Properties.getMandatoryProperty(Constants.CONJUR_AUTHN_URL_PROPERTY, applianceUrl + "/authn");
-
-        return new Credentials(login, apiKey, authnUrl);
+        String source = Properties.getMandatoryProperty(Constants.CONJUR_SOURCE_HEADER);
+        return new Credentials(login, apiKey, authnUrl,source);
     }
 
     /**
@@ -72,6 +87,7 @@ public class Credentials {
     public String getAuthnUrl() {
         return authnUrl;
     }
+    
 
     public String toString(){
         return username + ":" + password;
